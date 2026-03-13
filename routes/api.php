@@ -42,5 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Nombre total des utilisateurs inscris par mois
     Route::get('/stats/users-by-month', [UserController::class, 'usersByMonth']);
+
+    //logout
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 

@@ -33,4 +33,27 @@ class ItineraryTest extends TestCase
         $response->assertStatus(200)
                  ->assertJsonFragment(['title' => 'Voyage à Chefchaouen']);
     }
+
+    public function test_get_all_itineraries()
+{
+    $user = User::factory()->create();
+
+    // créer un itinéraire dans la base
+    \DB::table('itineraries')->insert([
+        'title' => 'Voyage Atlas',
+        'category' => 'Montagne',
+        'duration' => 4,
+        'user_id' => $user->id,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // appel API
+    $response = $this->getJson('/api/itineraries');
+
+    $response->assertStatus(200)
+             ->assertJsonFragment([
+                 'title' => 'Voyage Atlas'
+             ]);
+}
 }
