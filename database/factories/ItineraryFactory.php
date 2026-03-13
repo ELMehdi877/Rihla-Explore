@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\itineraries;
+use App\Models\Itinerary;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<itineraries>
+ * @extends Factory<Itinerary>
  */
-class ItinerariesFactory extends Factory
+class ItineraryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,11 @@ class ItinerariesFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence(),
+            'category' => 'plage',
+            'duration' => 3,
+            'image' => null,
+            'user_id' => 1
         ];
     }
 }

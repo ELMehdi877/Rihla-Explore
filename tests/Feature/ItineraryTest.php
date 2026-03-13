@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Itinerary;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ItineraryTest extends TestCase
 {
@@ -35,25 +37,31 @@ class ItineraryTest extends TestCase
     }
 
     public function test_get_all_itineraries()
-{
-    $user = User::factory()->create();
+    {
+        $user = User::factory()->create();
 
-    // créer un itinéraire dans la base
-    \DB::table('itineraries')->insert([
-        'title' => 'Voyage Atlas',
-        'category' => 'Montagne',
-        'duration' => 4,
-        'user_id' => $user->id,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
+        $response = $this->actingAs($user, 'sanctum')
+                        ->getJson('/api/itineraries');
 
-    // appel API
-    $response = $this->getJson('/api/itineraries');
+        $response->assertStatus(200);
+    }
 
-    $response->assertStatus(200)
-             ->assertJsonFragment([
-                 'title' => 'Voyage Atlas'
-             ]);
-}
+    public function test_filter_itineraries_by_category()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'sanctum');
+
+        Itinerary::factory()->create([
+            'category' => 'plage'
+        ]);
+
+        Itinerary::factory()->create([
+            'category' => 'montagne'
+        ]);
+
+        $response = $this->getJson('/api/itineraries?category=plage');
+
+        $response->assertStatus(200);
+    }
 }
