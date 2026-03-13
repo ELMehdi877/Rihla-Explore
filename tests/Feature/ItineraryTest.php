@@ -64,4 +64,43 @@ class ItineraryTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_filter_itineraries_by_duration()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'sanctum');
+
+        Itinerary::factory()->create([
+            'duration' => 3
+        ]);
+
+        Itinerary::factory()->create([
+            'duration' => 7
+        ]);
+
+        $response = $this->getJson('/api/itineraries?duration=3');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_filter_itineraries_by_keyword()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'sanctum');
+
+        Itinerary::factory()->create([
+            'title' => 'Voyage à Chefchaouen'
+        ]);
+
+        Itinerary::factory()->create([
+            'title' => 'Plage d’Agadir'
+        ]);
+
+        $response = $this->getJson('/api/itineraries?keyword=Chefchaouen');
+
+        $response->assertStatus(200)
+                ->assertJsonFragment(['title' => 'Voyage à Chefchaouen']);
+    }
 }
