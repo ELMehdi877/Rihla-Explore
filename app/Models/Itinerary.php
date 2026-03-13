@@ -19,7 +19,7 @@ class Itinerary extends Model
         'duration',
         'image',
         'user_id'
-    ];
+    ]; 
 
 
     public function destinations(){ 
