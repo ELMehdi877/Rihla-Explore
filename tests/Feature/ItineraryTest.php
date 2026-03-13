@@ -40,10 +40,13 @@ class ItineraryTest extends TestCase
     {
         $user = User::factory()->create();
 
+        Itinerary::factory()->count(3)->create();
+
         $response = $this->actingAs($user, 'sanctum')
                         ->getJson('/api/itineraries');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+                 ->assertJsonCount(3);
     }
 
     public function test_filter_itineraries_by_category()
@@ -62,7 +65,9 @@ class ItineraryTest extends TestCase
 
         $response = $this->getJson('/api/itineraries?category=plage');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+                 ->assertJsonFragment(['category' => 'plage'])
+                 ->assertJsonMissing(['category' => 'montagne']);
     }
 
     public function test_filter_itineraries_by_duration()
@@ -81,7 +86,9 @@ class ItineraryTest extends TestCase
 
         $response = $this->getJson('/api/itineraries?duration=3');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+                 ->assertJsonFragment(['duration' => 3])
+                 ->assertJsonMissing(['duration' => 7]);
     }
 
     public function test_filter_itineraries_by_keyword()
@@ -101,6 +108,7 @@ class ItineraryTest extends TestCase
         $response = $this->getJson('/api/itineraries?keyword=Chefchaouen');
 
         $response->assertStatus(200)
-                ->assertJsonFragment(['title' => 'Voyage à Chefchaouen']);
+                 ->assertJsonFragment(['title' => 'Voyage à Chefchaouen'])
+                 ->assertJsonMissing(['title' => 'Plage d’Agadir']);
     }
 }
