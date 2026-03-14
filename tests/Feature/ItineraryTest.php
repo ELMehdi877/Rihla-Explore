@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ItineraryTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase; 
 
     public function test_create_itinerary()
     {
